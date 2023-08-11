@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 type IconHoverProps = {
   children: ReactNode;
   red?: boolean;
-};
+}
 
 export function IconHoverEffect({ children, red = false }: IconHoverProps) {
   const colorClasses = red
