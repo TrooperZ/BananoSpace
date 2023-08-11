@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-type ProfileImageProps = {
+interface ProfileImageProps {
     src?: string | null
     className?: string
 }

@@ -7,7 +7,7 @@ import { IconHoverEffect } from "./IconHoverEffect";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./LoadingSpinner";
 
-type Post = {
+interface Post {
   id: string;
   content: string;
   createdAt: Date;
@@ -16,7 +16,7 @@ type Post = {
   user: { id: string; image: string | null; name: string | null };
 };
 
-type InfiniteListProps = {
+interface InfiniteListProps {
   isLoading: boolean;
   isError: boolean;
   hasMore: boolean | undefined;
@@ -96,9 +96,9 @@ function PostCard({
         };
       };
 
-      await trpcUtils.post.infiniteFeed.setInfiniteData({}, updateData);
-      await trpcUtils.post.infiniteFeed.setInfiniteData({ onlyFollowing: true }, updateData);
-      await trpcUtils.post.infiniteProfileFeed.setInfiniteData({ userId: user.id }, updateData);
+      trpcUtils.post.infiniteFeed.setInfiniteData({}, updateData);
+      trpcUtils.post.infiniteFeed.setInfiniteData({ onlyFollowing: true }, updateData);
+      trpcUtils.post.infiniteProfileFeed.setInfiniteData({ userId: user.id }, updateData);
     },
   });
 

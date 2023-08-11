@@ -1,19 +1,14 @@
 import { useSession } from "next-auth/react";
 import Button from "./Button";
 import ProfileImage from "./ProfileImage";
-import {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+
+import type { FormEvent } from "react";
 import { api } from "~/utils/api";
 
 function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
   if (textArea == null) return;
-  
+
   textArea.style.height = "0";
   textArea.style.height = `${textArea.scrollHeight}px`;
 }
@@ -35,7 +30,9 @@ function Form() {
 
   const createPost = api.post.create.useMutation({
     onSuccess: (newPost) => {
-      {/*console.log(newPost);*/}
+      {
+        /*console.log(newPost);*/
+      }
       setInputValue("");
 
       if (session.status !== "authenticated") return;
@@ -51,7 +48,7 @@ function Form() {
             id: session.data?.user.id,
             name: session.data.user.name || null,
             image: session.data.user.image || null,
-          }
+          },
         };
 
         return {
@@ -59,7 +56,7 @@ function Form() {
           page: [
             {
               ...oldData.pages[0],
-              posts: [newCachePost, ...oldData.pages[0].posts]
+              posts: [newCachePost, ...oldData.pages[0].posts],
             },
             ...oldData.pages.slice(1),
           ],

@@ -1,7 +1,7 @@
 import {VscRefresh} from 'react-icons/vsc';
 
 
-type LoadingSpinnerProps = {big?: boolean};
+interface LoadingSpinnerProps {big?: boolean};
 
 
 

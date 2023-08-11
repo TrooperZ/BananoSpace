@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, ButtonHTMLAttributes } from "react";
+import type { DetailedHTMLProps, ButtonHTMLAttributes } from "react";
 
 type ButtonProps = {
   small?: boolean;
@@ -8,7 +8,6 @@ type ButtonProps = {
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >;
-
 export default function Button({
   small = false,
   gray = false,

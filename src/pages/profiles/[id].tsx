@@ -36,7 +36,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       
   })
   }});
-  if (profile == null || profile.name == null)
+  if (profile?.name == null)
     return <ErrorPage statusCode={404} />;
 
   return (
@@ -107,7 +107,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   };
 };
 
-export async function getStaticProps(
+export function getStaticProps(
   context: GetStaticPropsContext<{ id: string }>
 ) {
   const id = context.params?.id;
@@ -120,7 +120,7 @@ export async function getStaticProps(
   }
 
   const ssg = ssgHelper();
-  ssg.profile.getById.prefetch({ id });
+  void ssg.profile.getById.prefetch({ id });
 
   return {
     props: {
