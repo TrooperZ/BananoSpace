@@ -68,7 +68,7 @@ function PostCard({
 }: Post) {
   const trpcUtils = api.useContext();
   const toggleLike = api.post.toggleLike.useMutation({
-    onSuccess: async ({ addedLike }) => {
+    onSuccess: ({ addedLike }) => {
       const updateData: Parameters<
         typeof trpcUtils.post.infiniteFeed.setInfiniteData
       >[1] = (oldData) => {

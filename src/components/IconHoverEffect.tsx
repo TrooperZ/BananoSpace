@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-type IconHoverProps = {
+import type { ReactNode } from "react";
+interface IconHoverProps {
   children: ReactNode;
   red?: boolean;
 }
