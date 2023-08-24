@@ -15,7 +15,7 @@ import { api } from "~/utils/api";
 import { useLayoutEffect, useState } from "react";
 
 
-function getBal() {
+function GetBalance() {
   const session = useSession();
   if (session.status !== "authenticated") {
     return 0;
@@ -23,21 +23,16 @@ function getBal() {
     const fetchUser = api.settings.fetchBalance.useQuery({
       id: session.data.user.id,
     });
-    return fetchUser.data != null ? fetchUser.data : 0;
+    return fetchUser.data ? fetchUser.data : 0;
   }
 }
 
-
 function Balance() {
-  const session = useSession();
   const [currentBalance, setCurrentBalance] = useState(0);
-  if (session.status !== "authenticated") return null;
-  const fetchUser = api.settings.fetchBalance.useQuery({
-    id: session.data.user.id,
-  });
+
   useLayoutEffect(() => {
     setCurrentBalance(
-      getBal()
+      GetBalance()
     );
   }, []);
 
