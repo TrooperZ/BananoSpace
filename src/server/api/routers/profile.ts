@@ -1,11 +1,9 @@
-import { Prisma } from "@prisma/client";
-import { inferAsyncReturnType } from "@trpc/server";
+
 import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-  createTRPCContext,
 } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
@@ -18,6 +16,7 @@ export const profileRouter = createTRPCRouter({
         select: {
           name: true,
           image: true,
+          address: true,
           _count: {select: {followers: true, follows: true, posts: true}},
           followers:
             currentUserId == null
@@ -33,17 +32,19 @@ export const profileRouter = createTRPCRouter({
         followsCount: profile._count.follows,
         postsCount: profile._count.posts,
         isFollowing: profile.followers.length > 0,
+        address: profile.address,
+
 
       }
 
     }),
     toggleFollow: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input: { userId }, ctx }) => {
       const currentUserId = ctx.session?.user?.id;
-      const exisitngFollow = await ctx.prisma.user.findFirst({
+      const existingFollow = await ctx.prisma.user.findFirst({
         where: {id: userId, followers: {some: {id: currentUserId}}},
       })
       let addedFollow
-      if (exisitngFollow == null) {
+      if (existingFollow == null) {
         await ctx.prisma.user.update({
           where: {id: userId},
           data: {followers: {connect: {id: currentUserId}}},

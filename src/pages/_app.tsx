@@ -15,11 +15,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <Head>
         <title>BananoSpace</title>
         <meta name="description" content="Welcome to BananoSpace!" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/BananoSpacelogo_small.png" />
       </Head>
-      <div className="container mx-auto flex items-start sm:pr-4">
+
+      <div className=" bg-[#2A2A2E]  mx-auto flex items-start ">
         <SideNav />
-        <div className="min-h-screen flex-grow border-x">
+        <div className="bg-[url('https://faucet.banoboto.repl.co/images/jungle.svg')] min-h-screen flex-grow ">
           <Component {...pageProps} />
         </div>
       </div>
@@ -28,3 +29,4 @@ const MyApp: AppType<{ session: Session | null }> = ({
 };
 
 export default api.withTRPC(MyApp);
+// https://faucet.banoboto.repl.co/images/jungle.svg

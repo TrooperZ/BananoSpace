@@ -74,23 +74,29 @@ function Form() {
   if (session.status !== "authenticated") return null;
 
   return (
+    <>
+    <div className="h-4">
+
+    </div>
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 border-b px-4 py-2"
+      className="flex bg-[#f5f5f5] pt-6 rounded-xl mx-5 flex-col gap-2 shadow-lg px-4 py-2"
     >
       <div className="flex gap-4">
         <ProfileImage src={session.data.user.image} />
         <textarea
+          maxLength={175}
           ref={inputRef}
           style={{ height: 0 }}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter post text"
-          className="flex-grow resize-none overflow-hidden rounded-xl border p-4 text-lg outline-none"
+          className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
         />
       </div>
       <Button className="self-end ">Post</Button>
     </form>
+    </>
   );
 }
 

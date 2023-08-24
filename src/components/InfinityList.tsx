@@ -35,7 +35,7 @@ export default function InfinityList({
   if (isError) return <h1>Error...</h1>;
   if (posts == null || posts.length == 0)
     return (
-      <h2 className="my-4 text-center text-2xl text-gray-500">No Tweets</h2>
+      <h2 className="my-4 text-center text-2xl text-black">No Posts</h2>
     );
 
   return (
@@ -56,6 +56,7 @@ export default function InfinityList({
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "short",
+  timeStyle: "short",
 });
 
 function PostCard({
@@ -107,7 +108,7 @@ function PostCard({
   }
 
   return (
-    <li className="flex gap-4 border-b px-4 py-4">
+    <li className="flex bg-[#f5f5f5] rounded-lg m-5 my-8 gap-4 shadow-lg px-4 py-4">
       <Link href={`/profiles/${user.id}`}>
         <ProfileImage src={user.image} />
       </Link>
@@ -119,7 +120,7 @@ function PostCard({
             {dateTimeFormatter.format(createdAt)}
           </span>
         </div>
-        <p className="whitespace-pre-wrap">{content}</p>
+        <p className="whitespace-pre-wrap break-all">{content}</p>
         <HeartButton
           onClick={handleToggleLike}
           isLoading={toggleLike.isLoading}

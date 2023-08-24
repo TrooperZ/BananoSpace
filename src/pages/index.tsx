@@ -12,17 +12,17 @@ export default function Home() {
   const session = useSession();
   return (
     <>
-      <header className="sticky top-0 z-10 border-b bg-white pt-2">
-        <h1 className="mb-2 px-4 text-lg font-bold">Home</h1>
+      <header className="sticky top-0 z-10  bg-[#2A2A2E] pt-2 ">
+        <h1 className="mb-2 px-4 text-lg text-white font-bold pb-2">Home</h1>
         {session.status === "authenticated" && (
           <div className="flex">
             {TABS.map((tab) => {
               return (
                 <button
                   key={tab}
-                  className={`p-2 flex-grow hover:bg-gray-200 focus-visible:background-gray-200 ${
+                  className={`p-2 text-white flex-grow hover:bg-yellow-400 hover:text-black focus-visible:background-gray-200 ${
                     tab === selectedTab
-                      ? "border-b-4 border-b-blue-500 font-bold"
+                      ? "border-b-4 border-b-yellow-400 font-bold"
                       : ""
                   }`}
                   onClick={() => setSelectedTab(tab)}
@@ -34,8 +34,11 @@ export default function Home() {
           </div>
         )}
       </header>
+      <div className="">
       <NewPostForm />
       {selectedTab === "Recent" ? <RecentPosts /> : <FollowingPosts />}
+      </div>
+
       
     </>
   );

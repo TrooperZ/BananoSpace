@@ -11,7 +11,7 @@ export function IconHoverEffect({ children, red = false }: IconHoverProps) {
 
   return (
     <div
-      className={`duration-2 rounded-full p-2 transition-colors ${colorClasses}`}
+      className={`duration-2 rounded-full p-2 hover:text-black hover:fill-black transition-colors ${colorClasses}`}
     >
       {children}
     </div>
