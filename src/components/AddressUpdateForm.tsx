@@ -1,10 +1,8 @@
 import { useSession } from "next-auth/react";
 import Button from "./Button";
-import ProfileImage from "./ProfileImage";
 import {
   useCallback,
-  useEffect,
-  useLayoutEffect,
+    useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -35,7 +33,6 @@ function Form() {
   const session = useSession();
   if (session.status !== "authenticated") return null;
 
-  const trpcUtils = api.useContext();
 
   // State to hold the current address
 
@@ -47,6 +44,9 @@ function Form() {
   useLayoutEffect(() => {
     if (fetchUser.data) {
       setCurrentAddress(fetchUser.data);
+    }
+    else {
+      setCurrentAddress("");
     }
   }, [fetchUser.data]);
 

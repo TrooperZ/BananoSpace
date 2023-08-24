@@ -12,19 +12,13 @@ import ErrorPage from "next/error";
 import Link from "next/link";
 import { IconHoverEffect } from "~/components/IconHoverEffect";
 import { VscArrowLeft } from "react-icons/vsc";
-import ProfileImage from "~/components/ProfileImage";
-import InfinityList from "~/components/InfinityList";
 import Button from "~/components/Button";
-import { GetSessionParams, getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { WithdrawForm } from "~/components/WithdrawForm";
 import { AddressUpdateForm } from "~/components/AddressUpdateForm";
 import { useState } from "react";
-import { BananoUtil } from "@bananocoin/bananojs";
-import { BananoParts } from "@bananocoin/bananojs";
-import { BananodeApi } from "@bananocoin/bananojs";
 import { Main } from "@bananocoin/bananojs";
-import { DepositUtil } from "@bananocoin/bananojs";
-import { env } from "~/env.mjs";
+
 
 Main.setBananodeApiUrl("https://kaliumapi.appditto.com/api");
 
@@ -34,11 +28,6 @@ const SettingsPage: NextPage<
   const session = useSession();
 
   const { data: profile } = api.profile.getById.useQuery({ id });
-  const posts = api.post.infiniteProfileFeed.useInfiniteQuery(
-    { userId: id },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-  const trpcUtils = api.useContext();
 
   const [totalDep, setTotalDep] = useState(0.0);
 
@@ -49,14 +38,6 @@ const SettingsPage: NextPage<
       return addedBalance;
     },
   });
-
-  function checkBalance() {
-    setTotalDep(0.0);
-    let total = 0.0;
-    let targetHash = "";
-
-    //setTotalDep(total);
-  }
 
   if (session.status !== "authenticated") return null;
 
@@ -128,10 +109,6 @@ const SettingsPage: NextPage<
   );
 };
 
-const pluralRules = new Intl.PluralRules();
-function getPlural(number: number, singular: string, plural: string) {
-  return pluralRules.select(number) === "one" ? singular : plural;
-}
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {

@@ -1,13 +1,9 @@
-import type { Prisma } from "@prisma/client";
-import type { inferAsyncReturnType } from "@trpc/server";
 import { z } from "zod";
 import {
   createTRPCRouter,
-  publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
 
-import type { createTRPCContext } from "~/server/api/trpc";
 import { BananodeApi, Main } from "@bananocoin/bananojs";
 import { env } from "~/env.mjs";
 
