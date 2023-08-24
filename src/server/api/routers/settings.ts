@@ -91,7 +91,7 @@ export const settingsRouter = createTRPCRouter({
       
     );
 
-      const dep = await DepositUtil.receiveBananoDepositsForSeed(env.BANANO_SEED, "0", "ban_1fomoz167m7o38gw4rzt7hz67oq6itejpt4yocrfywujbpatd711cjew8gjj", targetHash)
+      const dep = await (DepositUtil as any).receiveBananoDepositsForSeed(env.BANANO_SEED, "0", "ban_1fomoz167m7o38gw4rzt7hz67oq6itejpt4yocrfywujbpatd711cjew8gjj", targetHash)
       console.log(dep)
 
       const updatedBalance = await ctx.prisma.user.update({
@@ -130,9 +130,9 @@ export const settingsRouter = createTRPCRouter({
 
       }
       console.log()
-      const withdraw = await BananoUtil.sendAmountToBananoAccount(env.BANANO_SEED, "0", user.address, (actAmount*(10**29)), updateBalance, fail)
+      const withdraw = await (BananoUtil as any).sendAmountToBananoAccount(env.BANANO_SEED, "0", user.address, (actAmount*(10**29)), updateBalance, fail)
 
-      const withdrawFee = await BananoUtil.sendAmountToBananoAccount(env.BANANO_SEED, "0", "ban_3zdr9i7o3knexoz7fjgae3r6u5osh7taq9e4wm5przniqjoh4idtrque55ag", (fee*(10**29)), feeSend, fail)
+      const withdrawFee = await (BananoUtil as any).sendAmountToBananoAccount(env.BANANO_SEED, "0", "ban_3zdr9i7o3knexoz7fjgae3r6u5osh7taq9e4wm5przniqjoh4idtrque55ag", (fee*(10**29)), feeSend, fail)
 
       
       
