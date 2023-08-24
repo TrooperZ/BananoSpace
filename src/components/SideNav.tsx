@@ -12,32 +12,28 @@ import largeLogo from "./BananoSpacelogo.png";
 
 import Image from "next/image";
 import { api } from "~/utils/api";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
-function GetBalance() {
-  const session = useSession();
-  if (session.status !== "authenticated") {
-    return 0;
-  } else {
-    const fetchUser = api.settings.fetchBalance.useQuery({
-      id: session.data.user.id,
-    });
-    return fetchUser.data ? fetchUser.data : 0;
-  }
-}
 
-function Balance() {
+
+function Balance({ session }: { session: any }) {
   const [currentBalance, setCurrentBalance] = useState(0);
 
-  useLayoutEffect(() => {
-    setCurrentBalance(
-      GetBalance()
-    );
-  }, []);
+  const fetchUser = api.settings.fetchBalance.useQuery({
+    id: session.data.user.id,
+  });
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      // Update balance only when authenticated
+      setCurrentBalance(fetchUser.data ? fetchUser.data : 0);
+    }
+  }, [fetchUser.data, session.status]);
 
   return <span>{currentBalance}</span>;
 }
+
 
 export function SideNav() {
   const session = useSession();
@@ -53,7 +49,7 @@ export function SideNav() {
         {user != null && (
           <li className="flex w-full items-center justify-center">
             <span className="font-bold tracking-wide text-white">
-              <Balance /> BAN
+              <Balance session={session}/> BAN
             </span>
           </li>
         )}

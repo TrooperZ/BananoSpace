@@ -72,6 +72,7 @@ export const settingsRouter = createTRPCRouter({
         25,
         "true"
       ).then((accounts: any) => {
+        console.log(accounts);
         const pendingHashes =
           accounts.blocks
             .ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8;
