@@ -68,8 +68,8 @@ export const settingsRouter = createTRPCRouter({
       const mainAddr =
       "ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8";
 
-    const pending = await BananodeApi.getAccountsPending([mainAddr], 25, "true").then(
-      (accounts) => {
+    const pending = await BananodeApi.getAccountsPending([mainAddr], 25, "true").then( 
+      (accounts: any) => {
         const pendingHashes =
           accounts.blocks
             .ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8;
