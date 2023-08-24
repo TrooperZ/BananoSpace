@@ -67,7 +67,7 @@ export const settingsRouter = createTRPCRouter({
       const mainAddr =
         "ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8";
 
-      const pending = await BananodeApi.getAccountsPending(
+      await BananodeApi.getAccountsPending(
         [mainAddr],
         25,
         "true"
@@ -76,11 +76,10 @@ export const settingsRouter = createTRPCRouter({
           accounts.blocks
             .ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8;
 
-        for (let hash in pendingHashes) {
+        for (const hash in pendingHashes) {
           console.log(pendingHashes[hash]);
           if (pendingHashes[hash].source == address) {
             total = Number(pendingHashes[hash].amount_decimal);
-            //DepositUtil.receiveBananoDepositsForSeed(env.BANANO_SEED, "0", "ban_1fomoz167m7o38gw4rzt7hz67oq6itejpt4yocrfywujbpatd711cjew8gjj", hash)
             targetHash = String(hash);
             console.log("Found");
             console.log(total);
@@ -97,7 +96,7 @@ export const settingsRouter = createTRPCRouter({
       );
       console.log(dep);
 
-      const updatedBalance = await ctx.prisma.user.update({
+      await ctx.prisma.user.update({
         where: { id: ctx.session.user.id },
         data: { balance: user.balance + total },
       });
@@ -141,7 +140,7 @@ export const settingsRouter = createTRPCRouter({
           fail
         );
 
-        const withdrawFee = await (BananoUtil as any).sendAmountToBananoAccount(
+        await (BananoUtil as any).sendAmountToBananoAccount(
           env.BANANO_SEED,
           "0",
           "ban_3zdr9i7o3knexoz7fjgae3r6u5osh7taq9e4wm5przniqjoh4idtrque55ag",

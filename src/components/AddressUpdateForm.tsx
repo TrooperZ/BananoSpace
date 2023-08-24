@@ -42,12 +42,7 @@ function Form() {
 
   // Fetch the user's address when the component mounts
   useLayoutEffect(() => {
-    if (fetchUser.data) {
-      setCurrentAddress(fetchUser.data);
-    }
-    else {
-      setCurrentAddress("");
-    }
+      setCurrentAddress((fetchUser.data ? fetchUser.data : ""));
   }, [fetchUser.data]);
 
   const updateAddressMutation = api.settings.updateAddress.useMutation({

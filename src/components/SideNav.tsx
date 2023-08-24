@@ -22,12 +22,9 @@ function Balance() {
     id: session.data.user.id,
   });
   useLayoutEffect(() => {
-    if (fetchUser.data == null || fetchUser.data == undefined) {
-      return;
-    } 
-    else {
-      setCurrentBalance(fetchUser.data);
-    }
+    setCurrentBalance(
+      fetchUser.data != null || fetchUser.data != undefined ? fetchUser.data : 0
+    );
   }, [fetchUser.data]);
 
   return <span>{currentBalance}</span>;
