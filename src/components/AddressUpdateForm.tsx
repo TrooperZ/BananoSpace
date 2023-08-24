@@ -1,11 +1,6 @@
 import { useSession } from "next-auth/react";
 import Button from "./Button";
-import {
-  useCallback,
-    useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import type { FormEvent } from "react";
 import { api } from "~/utils/api";
@@ -17,31 +12,36 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
   textArea.style.height = `${textArea.scrollHeight}px`;
 }
 
-function Form() {
-  
+function getAddr() {
   const session = useSession();
-  if (session.status !== "authenticated") return null;
+  if (session.status !== "authenticated") {
+    return "";
+  } else {
+    const fetchUser = api.settings.fetchAddress.useQuery({
+      id: session.data.user.id,
+    });
+    return fetchUser.data != null ? fetchUser.data : "";
+  }
+}
 
+function Form() {
   const [inputValue, setInputValue] = useState("");
   const [errorValue, setErrorValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const [currentAddress, setCurrentAddress] = useState("");
-  const fetchUser = api.settings.fetchAddress.useQuery({
-    id: session.data.user.id,
-  });
-
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
-    setCurrentAddress((fetchUser.data ? fetchUser.data : ""));
-  }, [inputValue, fetchUser.data]);
+    setCurrentAddress(getAddr());
+  }, [inputValue]);
 
+  const session = useSession();
+  if (session.status !== "authenticated") return null;
 
   // State to hold the current address
-
 
   const updateAddressMutation = api.settings.updateAddress.useMutation({
     onSuccess: (updatedAddress) => {

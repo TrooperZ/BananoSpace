@@ -14,6 +14,20 @@ import Image from "next/image";
 import { api } from "~/utils/api";
 import { useLayoutEffect, useState } from "react";
 
+
+function getBal() {
+  const session = useSession();
+  if (session.status !== "authenticated") {
+    return 0;
+  } else {
+    const fetchUser = api.settings.fetchBalance.useQuery({
+      id: session.data.user.id,
+    });
+    return fetchUser.data != null ? fetchUser.data : 0;
+  }
+}
+
+
 function Balance() {
   const session = useSession();
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -23,9 +37,9 @@ function Balance() {
   });
   useLayoutEffect(() => {
     setCurrentBalance(
-      fetchUser.data != null || fetchUser.data != undefined ? fetchUser.data : 0
+      getBal()
     );
-  }, [fetchUser.data]);
+  }, []);
 
   return <span>{currentBalance}</span>;
 }
