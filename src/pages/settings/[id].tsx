@@ -28,14 +28,10 @@ import { env } from "~/env.mjs";
 
 Main.setBananodeApiUrl("https://kaliumapi.appditto.com/api");
 
-
-
-
 const SettingsPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ id }) => {
   const session = useSession();
-  
 
   const { data: profile } = api.profile.getById.useQuery({ id });
   const posts = api.post.infiniteProfileFeed.useInfiniteQuery(
@@ -43,36 +39,30 @@ const SettingsPage: NextPage<
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
   const trpcUtils = api.useContext();
-    
+
   const [totalDep, setTotalDep] = useState(0.0);
 
-
-
-  const depositFunc = api.settings.processDeposit.useMutation({onSuccess: (addedBalance) => {
-    console.log(addedBalance);
-    setTotalDep(addedBalance);
-    return addedBalance
-    }});
-
+  const depositFunc = api.settings.processDeposit.useMutation({
+    onSuccess: (addedBalance) => {
+      console.log(addedBalance);
+      setTotalDep(addedBalance);
+      return addedBalance;
+    },
+  });
 
   function checkBalance() {
     setTotalDep(0.0);
     let total = 0.0;
     let targetHash = "";
 
-
-
     //setTotalDep(total);
   }
-  
 
   if (session.status !== "authenticated") return null;
 
   if (profile?.name == null) return <ErrorPage statusCode={404} />;
 
   if (session.data?.user.id != id) return <ErrorPage statusCode={403} />;
-
-
 
   return (
     <>
@@ -87,7 +77,7 @@ const SettingsPage: NextPage<
         </Link>
       </header>
       <main className="">
-        <div className="mx-10 mt-12 flex flex-grow flex-col items-center gap-2 rounded-lg bg-white py-8 px-4 text-center shrink " >
+        <div className="mx-10 mt-12 flex shrink flex-grow flex-col items-center gap-2 rounded-lg bg-white px-4 py-8 text-center ">
           <h1 className="text-2xl font-bold">Settings</h1>
           <p className="text-lg ">
             Profile picture and username can be updated through Discord. Support
@@ -102,17 +92,36 @@ const SettingsPage: NextPage<
             <span className="font-bold text-red-500">
               WARNING: Funds must be sent FROM the same address as the
               withdrawal address.
-            </span><br />
+            </span>
+            <br />
             Refresh the page once a deposit is found.
           </h3>
-          <p className="rounded-md bg-gray-300 p-2 font-mono text-lg break-all">
+          <p className="break-all rounded-md bg-gray-300 p-2 font-mono text-lg">
             ban_3boxjpo7symnd4pzoimc6wofa71sp6bb6n55y9axhypxkfuk7qh3aiukgte8
           </p>
-          
-          <Button className="" onClick={() => depositFunc.mutate(profile.address)}>
-        Check Deposits
-      </Button>
-      {totalDep > 0 ? <span>Deposited: {totalDep} BAN. Refresh the page to update balance</span> : <span>No deposits found.</span>}
+          {profile.address == null ? (
+            <div className="rounded-xl bg-red-300 p-2 text-lg font-bold">
+              Enter withdrawal address first.
+            </div>
+          ) : (
+            <Button
+              className=""
+              onClick={() => {
+                if (profile.address !== null) {
+                  depositFunc.mutate(profile.address);
+                }
+              }}
+            >
+              Check Deposits
+            </Button>
+          )}
+          {totalDep > 0 ? (
+            <span>
+              Deposited: {totalDep} BAN. Refresh the page to update balance
+            </span>
+          ) : (
+            <span>No deposits found.</span>
+          )}
         </div>
       </main>
     </>
@@ -151,7 +160,5 @@ export function getStaticProps(context: GetStaticPropsContext<{ id: string }>) {
     },
   };
 }
-
-
 
 export default SettingsPage;
