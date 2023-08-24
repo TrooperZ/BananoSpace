@@ -18,32 +18,30 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
 }
 
 function Form() {
+  
+  const session = useSession();
+  if (session.status !== "authenticated") return null;
+
   const [inputValue, setInputValue] = useState("");
   const [errorValue, setErrorValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const [currentAddress, setCurrentAddress] = useState("");
+  const fetchUser = api.settings.fetchAddress.useQuery({
+    id: session.data.user.id,
+  });
+
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
-  }, [inputValue]);
-
-  const session = useSession();
-  if (session.status !== "authenticated") return null;
+    setCurrentAddress((fetchUser.data ? fetchUser.data : ""));
+  }, [inputValue, fetchUser.data]);
 
 
   // State to hold the current address
 
-  const fetchUser = api.settings.fetchAddress.useQuery({
-    id: session.data.user.id,
-  });
-
-  // Fetch the user's address when the component mounts
-  useLayoutEffect(() => {
-      setCurrentAddress((fetchUser.data ? fetchUser.data : ""));
-  }, [fetchUser.data]);
 
   const updateAddressMutation = api.settings.updateAddress.useMutation({
     onSuccess: (updatedAddress) => {
