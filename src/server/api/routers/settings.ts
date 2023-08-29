@@ -132,9 +132,7 @@ export const settingsRouter = createTRPCRouter({
           console.log(`fee of ${user?.address} successfully processed`);
         }
         console.log();
-        if (user!.balance < parseFloat(amount)) {
-          throw new Error("Insufficient Balance");
-        }
+
         await (BananoUtil as any).sendAmountToBananoAccount(
           env.BANANO_SEED,
           "0",
