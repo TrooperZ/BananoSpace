@@ -37,21 +37,21 @@ function Form() {
   const fetchUser = api.settings.fetchAddress.useQuery({
     id: session.data.user.id,
   });
-  let fetchBalance = api.settings.fetchBalance.useQuery({
+  const fetchBalance = api.settings.fetchBalance.useQuery({
     id: session.data.user.id,
   });
   // Fetch the user's address when the component mounts
 
   const updateAddressMutation = api.settings.processWithdraw.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Update the displayed address
       setInputValue(""); // Reset input value
       setErrorValue("Withdrawal Successful");
-      fetchBalance.refetch();
+      await fetchBalance.refetch();
     },
   });
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (isNaN(parseFloat(inputValue))) {
@@ -79,7 +79,7 @@ function Form() {
       return;
     }
 
-    updateAddressMutation.mutate(inputValue);
+    await updateAddressMutation.mutate(inputValue);
   };
 
   if (session.status !== "authenticated") return null;
