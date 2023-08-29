@@ -59,6 +59,55 @@ export const postRouter = createTRPCRouter({
         return { addedLike: false };
       }
     }),
+    tipPost: protectedProcedure
+    .input(z.object({ userId: z.string(), postId: z.string(), amt: z.number()}))
+    .mutation(async ({ input: { userId, postId, amt }, ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
+      });
+      const data = { postId: postId, userId: ctx.session.user.id };
+      const existingTip = await ctx.prisma.tip.findUnique({
+        where: { userId_postId: data },
+      });
+      if (existingTip == null) {
+        
+        await ctx.prisma.tip.create({
+          data: {
+            userId: ctx.session.user.id,
+            postId: postId,
+            amount: amt
+          }
+         });
+        return { addedTip: true };
+      }
+      else{
+        
+        await ctx.prisma.tip.update({
+          where: { userId_postId: data },
+          data: {
+            amount: existingTip.amount + amt
+          }
+        })
+      }
+      await ctx.prisma.user.update({
+        
+        where: { id: ctx.session.user.id },
+        data: { balance: user!.balance - amt },
+      }) 
+      console.log(ctx.session.user.id)
+
+      console.log(userId)
+      await ctx.prisma.user.update({
+        
+        where: { id: userId },
+        data: { balance: user!.balance - amt },
+      }) 
+
+
+      
+        
+      
+    })
 });
 
 async function getInfinitePosts({
@@ -80,6 +129,7 @@ async function getInfinitePosts({
       content: true,
       createdAt: true,
       _count: { select: { likes: true } },
+      tips: true,
       likes:
         currentUserId == null
           ? false
@@ -98,8 +148,13 @@ async function getInfinitePosts({
       nextCursor = { id: nextItem.id, createdAt: nextItem.createdAt };
     }
   }
+
   return {
     posts: posts.map((post) => {
+      let tipTotal = 0.0;
+      for (const tip of post.tips) {
+        tipTotal += tip.amount;
+      }
       return {
         id: post.id,
         content: post.content,
@@ -107,6 +162,8 @@ async function getInfinitePosts({
         likeCount: post._count.likes,
         user: post.user,
         likedByMe: post.likes?.length > 0,
+        tipped: post.tips,
+        totalTips: tipTotal
       };
     }),
     nextCursor,

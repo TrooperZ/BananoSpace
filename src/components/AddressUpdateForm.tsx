@@ -12,8 +12,7 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
   textArea.style.height = `${textArea.scrollHeight}px`;
 }
 
-function GetAddress() {
-  const session = useSession();
+function GetAddress({session}: any) {
   if (session.status !== "authenticated") {
     return "";
   } else {
@@ -33,14 +32,19 @@ function Form() {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
-  useLayoutEffect(() => {
-    updateTextAreaSize(textAreaRef.current);
-    setCurrentAddress(GetAddress());
-  }, [inputValue]);
+
 
   const session = useSession();
-  if (session.status !== "authenticated") return null;
 
+  const fetchUser = api.settings.fetchAddress.useQuery({
+    id: session.data!.user.id,
+  });
+
+  useLayoutEffect(() => {
+    updateTextAreaSize(textAreaRef.current);
+    setCurrentAddress(fetchUser.data ? fetchUser.data : "");
+  }, [inputValue, fetchUser.data]);
+  
   // State to hold the current address
 
   const updateAddressMutation = api.settings.updateAddress.useMutation({

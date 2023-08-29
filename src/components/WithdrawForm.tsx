@@ -37,7 +37,7 @@ function Form() {
   const fetchUser = api.settings.fetchAddress.useQuery({
     id: session.data.user.id,
   });
-  const fetchBalance = api.settings.fetchBalance.useQuery({
+  let fetchBalance = api.settings.fetchBalance.useQuery({
     id: session.data.user.id,
   });
   // Fetch the user's address when the component mounts
@@ -47,11 +47,17 @@ function Form() {
       // Update the displayed address
       setInputValue(""); // Reset input value
       setErrorValue("Withdrawal Successful");
+      fetchBalance.refetch();
     },
   });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+
+    if (isNaN(parseFloat(inputValue))) {
+      setErrorValue("Withdrawal amount must be a number");
+      return;
+    }
 
     if (fetchBalance.data == null || fetchBalance.data == undefined) {
       setErrorValue("Unknown Error. Please try again.");
@@ -65,6 +71,11 @@ function Form() {
 
     if (fetchBalance.data < Number(inputValue)) {
       setErrorValue("Insufficient Funds");
+      return;
+    }
+
+    if (parseFloat(inputValue) < 0) {
+      setErrorValue("Withdrawal amount must be positive");
       return;
     }
 
@@ -90,13 +101,7 @@ function Form() {
             ref={inputRef}
             style={{ height: 0 }}
             value={inputValue}
-            onChange={(e) => {
-              if (!isNaN(parseFloat(e.target.value))) {
-                setInputValue(e.target.value);
-              } else {
-                setInputValue("");
-              }
-            }}
+            onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter withdraw amount"
             className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none sm:w-[400px] md:w-[600px] lg:w-[800px]"
           />

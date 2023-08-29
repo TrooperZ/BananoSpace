@@ -115,8 +115,8 @@ export const settingsRouter = createTRPCRouter({
         const fee = parseFloat(amount) * 0.02;
         async function updateBalance() {
           console.log(`deposit of ${user?.address} successfully processed`);
-          if (user!.balance != undefined){
-            const updatedBalance = await ctx.prisma.user.update({
+          if (user!.balance != undefined || !(user!.balance < parseFloat(amount))) {
+            await ctx.prisma.user.update({
               where: { id: ctx.session.user.id },
               data: { balance: user!.balance - actAmount },
             });
@@ -124,15 +124,16 @@ export const settingsRouter = createTRPCRouter({
 
         }
 
-        async function fail() {
+        function fail() {
           console.log(`deposit of ${user?.address} failed`);
           
         }
-        async function feeSend() {
+        function feeSend() {
           console.log(`fee of ${user?.address} successfully processed`);
         }
         console.log();
-        const withdraw = await (BananoUtil as any).sendAmountToBananoAccount(
+        if (user!.balance > parseFloat(amount)){
+        await (BananoUtil as any).sendAmountToBananoAccount(
           env.BANANO_SEED,
           "0",
           user.address,
@@ -149,6 +150,7 @@ export const settingsRouter = createTRPCRouter({
           feeSend,
           fail
         );
+      }
       }
     }),
 });
