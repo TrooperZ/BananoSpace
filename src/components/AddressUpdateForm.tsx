@@ -12,17 +12,6 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
   textArea.style.height = `${textArea.scrollHeight}px`;
 }
 
-function GetAddress({session}: any) {
-  if (session.status !== "authenticated") {
-    return "";
-  } else {
-    const fetchUser = api.settings.fetchAddress.useQuery({
-      id: session.data.user.id,
-    });
-    return fetchUser.data ? fetchUser.data : "";
-  }
-}
-
 function Form() {
   const [inputValue, setInputValue] = useState("");
   const [errorValue, setErrorValue] = useState("");

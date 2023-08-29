@@ -2,12 +2,13 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ProfileImage from "./ProfileImage";
 import { useSession } from "next-auth/react";
-import { VscHeart, VscHeartFilled, VscPackage } from "react-icons/vsc";
+import { VscHeart, VscHeartFilled } from "react-icons/vsc";
 import { FaDollarSign } from "react-icons/fa";
 import { IconHoverEffect } from "./IconHoverEffect";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { FormEvent, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import type {FormEvent} from "react";
 import Button from "./Button";
 
 interface Post {
@@ -84,7 +85,7 @@ function PostCard({
   const [errorValue, setErrorValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const session = useSession();
-  let fetchBalance = api.settings.fetchBalance.useQuery({
+  const fetchBalance = api.settings.fetchBalance.useQuery({
     id: session.data!.user.id,
   });
 
@@ -317,7 +318,7 @@ function HeartButton({
   );
 }
 
-function TipButton({ isLoading, onClick, likeCount }: HeartButtonProps) {
+function TipButton({ isLoading, onClick }: HeartButtonProps) {
   const session = useSession();
 
   if (session.status !== "authenticated") {
