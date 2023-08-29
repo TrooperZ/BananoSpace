@@ -51,7 +51,7 @@ function Form() {
     },
   });
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     if (isNaN(parseFloat(inputValue))) {
@@ -79,7 +79,7 @@ function Form() {
       return;
     }
 
-    await updateAddressMutation.mutate(inputValue);
+    updateAddressMutation.mutate(inputValue);
   };
 
   if (session.status !== "authenticated") return null;
