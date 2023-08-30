@@ -89,7 +89,7 @@ function Form() {
       className="flex bg-[#f5f5f5] pt-6 rounded-xl mx-5 flex-col gap-2 shadow-lg px-4 py-2"
     >
       <div className="flex gap-4">
-        <ProfileImage src={session.data.user.image} />
+        <ProfileImage className="hidden md:block" src={session.data.user.image} />
         <div className="flex flex-col gap-4">
         <textarea
           maxLength={175}
