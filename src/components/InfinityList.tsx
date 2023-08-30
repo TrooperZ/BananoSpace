@@ -192,7 +192,7 @@ user={user}
           </div>
           
           <div className="flex flex-row end-0">
-            {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a")) && (<DeleteButton onClick={() => deletePost.mutate({id})} />))}
+            {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4")) && (<DeleteButton onClick={() => deletePost.mutate({id})} />))}
             
             {/*<ReportButton onClick={() => console.log("aaa")} />*/}
           </div>

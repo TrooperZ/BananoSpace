@@ -90,7 +90,7 @@ function Form() {
     >
       <div className="flex gap-4">
         <ProfileImage className="hidden md:block" src={session.data.user.image} />
-        <div className="flex flex-col gap-4">
+        {/*<div className="flex flex-col gap-4">*/}
         <textarea
           maxLength={175}
           ref={inputRef}
@@ -109,7 +109,7 @@ function Form() {
           onChange={(e) => setImageInputValue(e.target.value)}
           placeholder="Enter image url"
           className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
-        /> */}</div>
+  /> </div>*/}
       </div>
       <Button className="self-end ">Post</Button>
     </form>
