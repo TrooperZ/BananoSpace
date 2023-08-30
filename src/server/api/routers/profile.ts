@@ -24,9 +24,7 @@ export const profileRouter = createTRPCRouter({
               : { where: { id: currentUserId } },
         },
       });
-      
-      console.log("TRPC TRPC TRPC")
-      console.log(profile)
+
       if (profile == null) return;
 
       const isFollowingStat = (profile.followers && profile.followers.length > 0)

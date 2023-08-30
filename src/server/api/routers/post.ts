@@ -34,10 +34,10 @@ export const postRouter = createTRPCRouter({
       }
     ),
   create: protectedProcedure
-    .input(z.object({ content: z.string() }))
-    .mutation(async ({ input: { content }, ctx }) => {
+    .input(z.object({ content: z.string(), image: z.string() }))
+    .mutation(async ({ input: { content, image }, ctx }) => {
       const post = await ctx.prisma.post.create({
-        data: { content, userId: ctx.session.user.id },
+        data: { content, image: image, userId: ctx.session.user.id },
       });
       void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
       return post;
@@ -138,6 +138,7 @@ async function getInfinitePosts({
       createdAt: true,
       _count: { select: { likes: true } },
       tips: true,
+      image: true,
       likes:
         currentUserId == null
           ? false
@@ -171,7 +172,8 @@ async function getInfinitePosts({
         user: post.user,
         likedByMe: post.likes?.length > 0,
         tipped: post.tips,
-        totalTips: tipTotal
+        totalTips: tipTotal,
+        imageURL: post.image
       };
     }),
     nextCursor,

@@ -19,6 +19,7 @@ interface Post {
   likedByMe: boolean;
   user: { id: string; image: string | null; name: string | null };
   totalTips: number;
+  imageURL: string | null;
 }
 
 interface InfiniteListProps {
@@ -77,6 +78,7 @@ function PostCard({
   likeCount,
   likedByMe,
   totalTips,
+  imageURL,
 }: Post) {
   const trpcUtils = api.useContext();
 
@@ -167,6 +169,9 @@ function PostCard({
               </div>
 
               <p className="whitespace-pre-wrap break-all">{content}</p>
+              {imageURL && (
+                <img alt={content} src={imageURL} className="w-full max-w-[500px]" />
+              )}
               <div className="flex gap-3">
                 <HeartButton
                   onClick={handleToggleLike}

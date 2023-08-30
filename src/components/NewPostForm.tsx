@@ -16,19 +16,21 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
 function Form() {
   const session = useSession();
   const [inputValue, setInputValue] = useState("");
-  const [postTimestamps, setPostTimestamps] = useState<number[]>([]);
+  const [imageInputValue, setImageInputValue] = useState("");
+
 
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
+  
 
   const trpcUtils = api.useContext();
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
-  }, [inputValue]);
+  }, [inputValue, imageInputValue]);
 
   const createPost = api.post.create.useMutation({
     onSuccess: (newPost) => {
@@ -72,18 +74,7 @@ function Form() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const currentTime = Date.now();
-      setPostTimestamps((timestamps) => [...timestamps, currentTime]);
-
-      const oneHourAgo = currentTime - 60 * 60 * 1000;
-      const postsInLastHour = postTimestamps.filter((timestamp) => timestamp > oneHourAgo);
-
-      if (postsInLastHour.length > 5) {
-        alert("You have reached the post limit for this hour.");
-        return;
-      }
-
-    createPost.mutate({ content: inputValue });
+    createPost.mutate({ content: inputValue, image: imageInputValue });
   }
 
   if (session.status !== "authenticated") return null;
@@ -99,6 +90,7 @@ function Form() {
     >
       <div className="flex gap-4">
         <ProfileImage src={session.data.user.image} />
+        <div className="flex flex-col gap-4">
         <textarea
           maxLength={175}
           ref={inputRef}
@@ -108,6 +100,16 @@ function Form() {
           placeholder="Enter post text"
           className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
         />
+        <p>(Optional) Enter image URL: <span className="text-xs">(We currently do not have enough space to host images, so please use something like imagur or some other service, thanks)</span></p>
+                <textarea
+
+          ref={inputRef}
+          style={{ height: 0 }}
+          value={imageInputValue}
+          onChange={(e) => setImageInputValue(e.target.value)}
+          placeholder="Enter image url"
+          className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
+        /></div>
       </div>
       <Button className="self-end ">Post</Button>
     </form>

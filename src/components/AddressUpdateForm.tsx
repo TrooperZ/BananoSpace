@@ -6,24 +6,26 @@ import type { FormEvent } from "react";
 import { api } from "~/utils/api";
 
 function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
-  if (textArea == null) return;
-
-  textArea.style.height = "0";
-  textArea.style.height = `${textArea.scrollHeight}px`;
+  if (textArea) {
+    textArea.style.height = "0";
+    textArea.style.height = `${textArea.scrollHeight}px`;
+  }
 }
 
+
 function Form() {
+  const session = useSession();
+  
   const [inputValue, setInputValue] = useState("");
   const [errorValue, setErrorValue] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement>();
+
   const [currentAddress, setCurrentAddress] = useState("");
+
+  const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
-
-
-  const session = useSession();
 
   const fetchUser = api.settings.fetchAddress.useQuery({
     id: session.data!.user.id,
@@ -33,8 +35,6 @@ function Form() {
     updateTextAreaSize(textAreaRef.current);
     setCurrentAddress(fetchUser.data ? fetchUser.data : "");
   }, [inputValue, fetchUser.data]);
-  
-  // State to hold the current address
 
   const updateAddressMutation = api.settings.updateAddress.useMutation({
     onSuccess: (updatedAddress) => {
