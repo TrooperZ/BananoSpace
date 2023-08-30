@@ -16,6 +16,8 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
 function Form() {
   const session = useSession();
   const [inputValue, setInputValue] = useState("");
+  const [postTimestamps, setPostTimestamps] = useState<number[]>([]);
+
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
@@ -36,6 +38,8 @@ function Form() {
       setInputValue("");
 
       if (session.status !== "authenticated") return;
+
+      
 
       trpcUtils.post.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (oldData?.pages[0] == null) return;
@@ -67,6 +71,17 @@ function Form() {
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+
+    const currentTime = Date.now();
+      setPostTimestamps((timestamps) => [...timestamps, currentTime]);
+
+      const oneHourAgo = currentTime - 60 * 60 * 1000;
+      const postsInLastHour = postTimestamps.filter((timestamp) => timestamp > oneHourAgo);
+
+      if (postsInLastHour.length > 5) {
+        alert("You have reached the post limit for this hour.");
+        return;
+      }
 
     createPost.mutate({ content: inputValue });
   }
