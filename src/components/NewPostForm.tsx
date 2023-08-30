@@ -100,7 +100,7 @@ function Form() {
           placeholder="Enter post text"
           className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
         />
-        <p>(Optional) Enter image URL: <span className="text-xs">(We currently do not have enough space to host images, so please use something like imagur or some other service, thanks)</span></p>
+       {/*  <p>(Optional) Enter image URL: <span className="text-xs">(We currently do not have enough space to host images, so please use something like imagur or some other service, thanks)</span></p>
                 <textarea
 
           ref={inputRef}
@@ -109,7 +109,7 @@ function Form() {
           onChange={(e) => setImageInputValue(e.target.value)}
           placeholder="Enter image url"
           className="flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
-        /></div>
+        /> */}</div>
       </div>
       <Button className="self-end ">Post</Button>
     </form>
