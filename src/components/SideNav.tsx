@@ -9,6 +9,7 @@ import {
 } from "react-icons/vsc";
 import { IconHoverEffect } from "./IconHoverEffect";
 import largeLogo from "./BananoSpacelogo.png";
+import smallLogo from "./BananoSpacelogo_small.png";
 
 import Image from "next/image";
 import { api } from "~/utils/api";
@@ -44,11 +45,12 @@ export function SideNav() {
     <nav className="sticky top-0 min-h-screen bg-[#2A2A2E] px-2 py-4">
       <ul className="flex flex-col items-start gap-2 whitespace-nowrap">
         <li>
-          <Image src={largeLogo} alt="logo" className="w-32" />
+          <Image src={largeLogo} alt="logo" className="w-32 hidden md:block" />
+          <Image src={smallLogo} alt="logo" className="w-10 block md:hidden" />
         </li>
         {user != null && (
           <li className="flex w-full items-center justify-center">
-            <span className="font-bold tracking-wide text-white">
+            <span className="font-bold tracking-wide text-sm md:text-lg text-white">
               <Balance session={session}/> BAN
             </span>
           </li>
