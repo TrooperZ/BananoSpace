@@ -155,7 +155,7 @@ function PostCard({
             </Link>
             <div className="flex flex-grow flex-col">
               <div className="flex flex-col gap-1 outline-none hover:underline focus-visible:underline md:flex-row">
-                <Link href={`/profiles/${user.id}`}>{user.name} {(user.id === "cllejbo010000f3msqyos3r3a" || user.id === "clkpsr1lc0000ml08o5pmj7l4") && <span className="text-gray-500">DEV </span>}{session.data!.user.id === user.id && <span className="text-gray-500">You</span>}</Link>
+                <Link href={`/profiles/${user.id}`}>{user.name} {(user.id === "cllejbo010000f3msqyos3r3a" || user.id === "clkpsr1lc0000ml08o5pmj7l4") && <span className="text-gray-500">DEV </span>}{(session.status === "authenticated" && session.data!.user.id === user.id) && <span className="text-gray-500">You</span>}</Link>
 
                 <span className="hidden text-gray-500 md:block">-</span>
 
