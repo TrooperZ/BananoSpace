@@ -35,6 +35,7 @@ export default function Home() {
         )}
       </header>
       <div className="">
+        <h1 className="text-center py-2 px-2 bg-yellow-200 rounded-lg m-4">Welcome to BananoSpace! This project is still in the works, so expect tons of features to come soon! Bug fixes will come quickly, and if you need help, ping @trooperz in the Banano Discord.</h1>
       <NewPostForm />
       {selectedTab === "Recent" ? <RecentPosts /> : <FollowingPosts />}
       </div>
