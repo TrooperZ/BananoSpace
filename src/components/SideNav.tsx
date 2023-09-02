@@ -32,7 +32,7 @@ function Balance({ session }: { session: any }) {
     }
   }, [fetchUser.data, session.status]);
 
-  return <span>{currentBalance}</span>;
+  return <span>{currentBalance.toFixed(2)}</span>;
 }
 
 

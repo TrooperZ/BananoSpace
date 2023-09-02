@@ -73,10 +73,28 @@ export const postRouter = createTRPCRouter({
       const user = await ctx.prisma.user.findUnique({
         where: { id: ctx.session.user.id },
       });
+      const targetUuser = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+      })
       const data = { postId: postId, userId: ctx.session.user.id };
       const existingTip = await ctx.prisma.tip.findUnique({
         where: { userId_postId: data },
       });
+      
+      await ctx.prisma.user.update({
+        
+        where: { id: ctx.session.user.id },
+        data: { balance: user!.balance - amt },
+      }) 
+      console.log(ctx.session.user.id)
+
+      console.log(userId)
+      await ctx.prisma.user.update({
+        
+        where: { id: userId },
+        data: { balance: targetUuser!.balance + amt },
+      }) 
+
       if (existingTip == null) {
         
         await ctx.prisma.tip.create({
@@ -97,19 +115,6 @@ export const postRouter = createTRPCRouter({
           }
         })
       }
-      await ctx.prisma.user.update({
-        
-        where: { id: ctx.session.user.id },
-        data: { balance: user!.balance - amt },
-      }) 
-      console.log(ctx.session.user.id)
-
-      console.log(userId)
-      await ctx.prisma.user.update({
-        
-        where: { id: userId },
-        data: { balance: user!.balance - amt },
-      }) 
 
 
       
