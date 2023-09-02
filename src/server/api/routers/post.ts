@@ -77,6 +77,9 @@ export const postRouter = createTRPCRouter({
         where: { id: userId },
       })
       const data = { postId: postId, userId: ctx.session.user.id };
+      const postFound = await ctx.prisma.post.findUnique({
+        where: { id: postId },
+      })
       const existingTip = await ctx.prisma.tip.findUnique({
         where: { userId_postId: data },
       });
@@ -95,24 +98,18 @@ export const postRouter = createTRPCRouter({
         data: { balance: targetUuser!.balance + amt },
       }) 
 
-      if (existingTip == null) {
-        
-        await ctx.prisma.tip.create({
-          data: {
-            userId: ctx.session.user.id,
-            postId: postId,
-            amount: amt
-          }
-         });
-        return { addedTip: true };
-      }
-      else{
-        
+      try {
+      await ctx.prisma.tip.create({
+        data: {
+          userId: ctx.session.user.id,
+          postId: postId,
+          amount: amt
+        }
+       });}
+      catch{
         await ctx.prisma.tip.update({
           where: { userId_postId: data },
-          data: {
-            amount: existingTip.amount + amt
-          }
+          data: { amount: existingTip!.amount + amt }
         })
       }
 
