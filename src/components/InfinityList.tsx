@@ -256,47 +256,11 @@ function TipButton({ isLoading, id, user }: any) {
     className?: string;
   }
 
-  function TipDialog({ className }: TipDialogProps) {
-    return (
-      <div className={`${className}`}>
-        <h1 className="pb-4 text-2xl font-bold">Tip BAN</h1>
-        <div className="space-x-4">
-          <form
-            onSubmit={handleTip}
-            className="mx-5 flex flex-col items-center gap-2 rounded-xl "
-          >
-            <div className="flex gap-4">
-              <textarea
-                ref={inputRef}
-                style={{ height: 0 }}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Enter"
-                className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
-              />
-            </div>
-            <div>
-              <Button>Send</Button>{" "}
-              <button
-                className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
-                onClick={() => setTipDialog(false)}
-              >
-                Close
-              </button>
-            </div>
-
-            {errorValue && <p className="text-red-500">{errorValue}</p>}
-          </form>
-        </div>
-      </div>
-    );
-  }
-  
   const [errorValue, setErrorValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const session = useSession();
   const [inputValue, setInputValue] = useState("");
-  const [tipDialog, setTipDialog] = useState(false);
+
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
@@ -344,6 +308,9 @@ function TipButton({ isLoading, id, user }: any) {
       setTipDialog(false);
     },
   });
+  
+ 
+  const [tipDialog, setTipDialog] = useState(false);
 
 
   if (session.status !== "authenticated") {
@@ -369,7 +336,38 @@ function TipButton({ isLoading, id, user }: any) {
       </IconHoverEffect>
     </button>
     {tipDialog && (
-      <TipDialog className="flex w-full flex-col items-center justify-center" />
+      <>
+            <div className="justify-center items-center mx-auto">
+        <h1 className="pb-4 text-2xl font-bold text-center">Tip BAN</h1>
+        <div className="space-x-4">
+          <form
+            onSubmit={handleTip}
+            className="mx-5 flex flex-col items-center gap-2 rounded-xl "
+          >
+            <div className="flex gap-4">
+              <textarea
+                          ref={inputRef}
+                          style={{ height: 0 }}
+                          value={inputValue}
+                          onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter Amount" autoFocus 
+                className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
+              />
+            </div>
+            <div>
+              <Button>Send</Button>{" "}
+              <button
+                className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
+                onClick={() => setTipDialog(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            {errorValue && <p className="text-red-500">{errorValue}</p>}
+          </form>
+        </div>
+      </div></>
     )}
     </div>
   );
