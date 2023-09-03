@@ -4,8 +4,8 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
-  FormEvent,
 } from "react";
+import type { FormEvent } from "react";
 import { FaDollarSign } from "react-icons/fa";
 import { api } from "~/utils/api";
 import Button from "./Button";
