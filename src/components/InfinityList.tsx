@@ -2,15 +2,21 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ProfileImage from "./ProfileImage";
 import { useSession } from "next-auth/react";
-import { VscHeart, VscHeartFilled } from "react-icons/vsc";
-import { FaDollarSign, FaFlag, FaTrash } from "react-icons/fa";
+import { VscComment } from "react-icons/vsc";
 import { IconHoverEffect } from "./IconHoverEffect";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Button from "./Button";
+import HeartButton from "./HeartButton";
+import { TipButton, TipDialog } from "./TipButton";
+import DeleteButton from "./DeleteButton";
 
+const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: "short",
+  timeStyle: "short",
+});
 interface Post {
   id: string;
   content: string;
@@ -20,6 +26,7 @@ interface Post {
   user: { id: string; image: string | null; name: string | null };
   totalTips: number;
   imageURL: string | null;
+  comments: any;
 }
 
 interface InfiniteListProps {
@@ -58,11 +65,6 @@ export default function InfinityList({
   );
 }
 
-const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "short",
-  timeStyle: "short",
-});
-
 function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
   if (textArea == null) return;
 
@@ -79,15 +81,13 @@ function PostCard({
   likedByMe,
   totalTips,
   imageURL,
+  comments,
 }: Post) {
   const trpcUtils = api.useContext();
 
-
-
   const session = useSession();
-  
 
-
+  const [toggleTipView, setToggleTipView] = useState(false);
 
   const toggleLike = api.post.toggleLike.useMutation({
     onSuccess: ({ addedLike }) => {
@@ -130,20 +130,15 @@ function PostCard({
     },
   });
 
- 
   const deletePost = api.post.deletePost.useMutation({
     onSuccess: () => {
-      console.log("deleted post")
-    }
-  })
-
-  
+      console.log("deleted post");
+    },
+  });
 
   function handleToggleLike() {
     toggleLike.mutate({ id });
   }
-
-  
 
   return (
     <>
@@ -155,7 +150,17 @@ function PostCard({
             </Link>
             <div className="flex flex-grow flex-col">
               <div className="flex flex-col gap-1 outline-none hover:underline focus-visible:underline md:flex-row">
-                <Link href={`/profiles/${user.id}`}>{user.name} {(user.id === "cllejbo010000f3msqyos3r3a" || user.id === "clkpsr1lc0000ml08o5pmj7l4") && <span className="text-gray-500">DEV </span>}{(session.status === "authenticated" && session.data!.user.id === user.id) && <span className="text-gray-500">You</span>}</Link>
+                <Link href={`/profiles/${user.id}`}>
+                  {user.name}{" "}
+                  {(user.id === "clm3kxaaz0000f334m1hm9nh4" ||
+                    user.id === "clkpsr1lc0000ml08o5pmj7l4") && (
+                    <span className="text-black bg-yellow-400 p-1 rounded-lg mr-1">DEV</span>
+                  )}
+                  {session.status === "authenticated" &&
+                    session.data!.user.id === user.id && (
+                      <span className="text-black bg-green-500 p-1 rounded-lg">You</span>
+                    )}
+                </Link>
 
                 <span className="hidden text-gray-500 md:block">-</span>
 
@@ -165,13 +170,18 @@ function PostCard({
 
                 <span className="hidden text-gray-500 md:block"> | </span>
 
-                <span className="text-gray-500">{totalTips} BAN tipped</span>
+                <span className="text-gray-500">{totalTips.toFixed(2)} BAN tipped</span>
               </div>
 
               <p className="whitespace-pre-wrap break-all">{content}</p>
               {imageURL && (
-                <img alt={content} src={imageURL} className="w-full max-w-[500px]" />
+                <img
+                  alt={content}
+                  src={imageURL}
+                  className="w-full max-w-[500px]"
+                />
               )}
+              <div className="">
               <div className="flex gap-3">
                 <HeartButton
                   onClick={handleToggleLike}
@@ -179,222 +189,159 @@ function PostCard({
                   likedByMe={likedByMe}
                   likeCount={likeCount}
                 />
-                {(session.status == "authenticated" && session.data!.user.id != user.id) && (
-                  <TipButton className={""} 
-                    
+                {session.status == "authenticated" &&
+                  session.data!.user.id != user.id && (
+                    <>
+                      {/* <CommentButton
+                  commentsData={comments}
                     isLoading={false}
 id={id}
 user={user}
-                  />
-                )}
+amt={0}/> */}
+                      <TipButton
+                        onClick={() => {
+                          setToggleTipView(!toggleTipView);
+                        }}
+                      />
+                    </>
+                  )}
+              </div>
               </div>
             </div>
           </div>
-          
-          <div className="flex flex-row end-0">
-            {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4")) && (<DeleteButton onClick={() => deletePost.mutate({id})} />))}
-            
+
+          <div className="end-0 flex flex-row">
+            {session.status == "authenticated" &&
+              (session.data!.user.id === user.id ||
+                session.data!.user.id === "clm3kxaaz0000f334m1hm9nh4" ||
+                session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4") && (
+                <DeleteButton onClick={() => deletePost.mutate({ id })} />
+              )}
+
             {/*<ReportButton onClick={() => console.log("aaa")} />*/}
           </div>
         </div>
+        <div className="">
+        {toggleTipView && (
+                <TipDialog dialogRefrence={setToggleTipView} user={user} id={id} />
+              )}
+              </div>
       </li>
     </>
   );
 }
 
-interface HeartButtonProps {
-  onClick: () => void;
-  likedByMe: boolean;
-  likeCount: number;
-  isLoading: boolean;
-}
-
-function HeartButton({
-  isLoading,
-  onClick,
-  likedByMe,
-  likeCount,
-}: HeartButtonProps) {
-  const session = useSession();
-  const HeartIcon = likedByMe ? VscHeartFilled : VscHeart;
-
-  if (session.status !== "authenticated") {
-    return (
-      <div className="mb-1 mt-1 flex items-center gap-3 self-start text-gray-500">
-        <HeartIcon />
-        <span>{likeCount}</span>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={isLoading}
-      className={`group -ml-2 flex items-center gap-1 self-start transition-colors duration-200 ${
-        likedByMe
-          ? "text-red-500"
-          : "text-gray-500 hover:text-red-500 focus-visible:text-red-500"
-      }`}
-    >
-      <IconHoverEffect red>
-        <HeartIcon
-          className={`transition-colors duration-200 ${
-            likedByMe
-              ? "fill-red-500"
-              : "fill-gray-500 group-hover:fill-red-500 group-focus-visible:fill-red-500"
-          }`}
-        />
-      </IconHoverEffect>
-      <span>{likeCount}</span>
-    </button>
-  );
-}
-
-function TipButton({ isLoading, id, user }: any) {
-  interface TipDialogProps {
-    className?: string;
-  }
-
-  const [errorValue, setErrorValue] = useState("");
+function CommentButton({ isLoading, id, user, amt, commentsData }: any) {
+  const [comments, setComments] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const session = useSession();
-  const [inputValue, setInputValue] = useState("");
 
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
-  
+
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
   }, [inputValue]);
-  const handleTip = (event: FormEvent) => {
+
+  const handleComment = (event: FormEvent) => {
     event.preventDefault();
 
     if (session.status !== "authenticated") return;
 
-    if (inputValue.trim().length === 0) {
-      setErrorValue("Tip amount cannot be empty");
+    if (session.data.user.name === null || session.data.user.name === undefined)
       return;
-    }
 
-    if (isNaN(parseFloat(inputValue))) {
-      setErrorValue("Tip amount must be a number");
-      return;
-    }
-
-    if (parseFloat(inputValue) <= 0) {
-      setErrorValue("Tip amount must be greater than 0");
-      return;
-    }
-
-    if (parseFloat(inputValue) > fetchBalance.data!) {
-      setErrorValue("Insufficient Balance");
-      return;
-    }
-
-    tipPost.mutate({
-      userId: user.id,
+    commentPost.mutate({
+      creator: session.data!.user.name,
       postId: id,
-      amt: parseFloat(inputValue),
+      content: inputValue,
     });
   };
-  const fetchBalance = api.settings.fetchBalance.useQuery({
-    id: session.data!.user.id,
-  });
-  const tipPost = api.post.tipPost.useMutation({
-    onSuccess: () => {
-      setTipDialog(false);
-    },
-  });
-  
- 
-  const [tipDialog, setTipDialog] = useState(false);
 
+  const commentPost = api.post.makeComment.useMutation({
+    onSuccess: () => {},
+  });
 
   if (session.status !== "authenticated") {
     return (
       <div className="mb-1 mt-1 flex items-center gap-3 self-start text-gray-500">
-        <span></span>
+        <VscComment className="fill-gray-500" />
+        <span>{amt}</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-    <button
-      onClick={() => setTipDialog(!tipDialog)}
-      disabled={isLoading}
-      className={`group -mt-1 flex flex-row items-center gap-1 self-start transition-colors duration-200`}
-    >
-      <IconHoverEffect>
-        <div className="flex items-center gap-1">
-          <FaDollarSign className="fill-black" />
-          <span>Tip BAN</span>
-        </div>
-      </IconHoverEffect>
-    </button>
-    {tipDialog && (
-      <>
-            <div className="justify-center items-center mx-auto">
-        <h1 className="pb-4 text-2xl font-bold text-center">Tip BAN</h1>
-        <div className="space-x-4">
-          <form
-            onSubmit={handleTip}
-            className="mx-5 flex flex-col items-center gap-2 rounded-xl "
-          >
-            <div className="flex gap-4">
-              <textarea
-                          ref={inputRef}
-                          style={{ height: 0 }}
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Enter Amount" autoFocus 
-                className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
-              />
-            </div>
-            <div>
-              <Button>Send</Button>{" "}
-              <button
-                className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
-                onClick={() => setTipDialog(false)}
+    <div className="w-max">
+      <button
+        onClick={() => {
+          setComments(!comments);
+        }}
+        disabled={isLoading}
+        className={`group -ml-2 flex items-center gap-1 self-start text-gray-500 transition-colors duration-200`}
+      >
+        <IconHoverEffect>
+          <VscComment
+            className={`fill-gray-500 transition-colors duration-200`}
+          />
+        </IconHoverEffect>
+        <span>{amt}</span>
+      </button>
+      {comments && (
+        <>
+          <div className="mx-auto items-center justify-center">
+            <h1 className="pb-4 text-center text-2xl font-bold"></h1>
+            <div className="space-x-4">
+              <form
+                onSubmit={handleComment}
+                className="mx-5 flex flex-col items-center gap-2 rounded-xl "
               >
-                Close
-              </button>
+                <div className="flex gap-4">
+                  <textarea
+                    ref={inputRef}
+                    style={{ height: 0 }}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Add comment..."
+                    autoFocus
+                    className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
+                  />
+                </div>
+                <div>
+                  <Button>Comment</Button>{" "}
+                  <button
+                    className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
+                    onClick={() => setComments(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
             </div>
-
-            {errorValue && <p className="text-red-500">{errorValue}</p>}
-          </form>
-        </div>
-      </div></>
-    )}
+          </div>
+          <div className="pt-2">
+            <div className="rounded-lg bg-gray-300 p-3">
+              {commentsData.map((comment: any) => (
+                <div
+                  key={comment.id}
+                  className="border-1 mx-1 border-b border-gray-700 pb-2"
+                >
+                  <h1>
+                    {comment.creator} -{" "}
+                    {dateTimeFormatter.format(comment.createdAt)}
+                  </h1>
+                  <p>{comment.content}</p>
+                  {/* {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4")) && (<DeleteButton onClick={() => deleteComment.mutate({id})} />))} */}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
-  );
-}
-
-function DeleteButton({ onClick }: any) {
-  const session = useSession();
-
-  if (session.status !== "authenticated") {
-    return (
-      <div className="mb-1 mt-1 flex items-center gap-3 self-start text-gray-500">
-        <span></span>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      className={`group -mt-1 flex flex-row items-center gap-1 self-start transition-colors duration-200`}
-    >
-      <IconHoverEffect>
-        <div className="flex items-center gap-1">
-          <FaTrash className="fill-red-600" />
-        </div>
-      </IconHoverEffect>
-    </button>
   );
 }
 

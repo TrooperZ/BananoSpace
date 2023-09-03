@@ -64,7 +64,7 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ input: { id }, ctx }) => {
 
       await ctx.prisma.post.delete({ where: { id: id } });
-      
+      void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
 
     }),
     tipPost: protectedProcedure
@@ -113,11 +113,28 @@ export const postRouter = createTRPCRouter({
         })
       }
 
-
-      
+      void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
         
+      return amt;
       
-    })
+    }),
+    makeComment: protectedProcedure.input(z.object({ creator: z.string(), postId: z.string(), content: z.string()}))
+    .mutation(async ({ input: { creator, postId, content }, ctx })  => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: postId },
+      });
+      await ctx.prisma.comment.create({
+        data: { content, postId, creator: creator, userId: ctx.session.user.id },
+      })
+    }),
+    // deleteComment: protectedProcedure
+    // .input(z.object({ id: z.string() }))
+    // .mutation(async ({ input: { id }, ctx }) => {
+
+    //   await ctx.prisma.comment.delete({ where: { id: id } });
+    //   void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
+
+    // }),
 });
 
 async function getInfinitePosts({
@@ -141,6 +158,7 @@ async function getInfinitePosts({
       _count: { select: { likes: true } },
       tips: true,
       image: true,
+      comments: true,
       likes:
         currentUserId == null
           ? false
@@ -175,7 +193,8 @@ async function getInfinitePosts({
         likedByMe: post.likes?.length > 0,
         tipped: post.tips,
         totalTips: tipTotal,
-        imageURL: post.image
+        imageURL: post.image,
+        comments: post.comments,
       };
     }),
     nextCursor,
