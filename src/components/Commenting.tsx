@@ -4,8 +4,9 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
-  FormEvent,
+  
 } from "react";
+import type {FormEvent} from "react";
 import { VscComment } from "react-icons/vsc";
 import { api } from "~/utils/api";
 import Button from "./Button";
@@ -157,7 +158,7 @@ function CommentSection({ id, commentsData }: any) {
                         <div>
                       <h1 className="">
                         {comment.creator} -{" "}
-                        {dateTimeFormatter.format(comment.createdAt)}
+                        {dateTimeFormatter.format(Number(comment.createdAt))}
                       </h1>
                       <p>{comment.content}</p>
                       </div>
