@@ -36,7 +36,7 @@ export default function Home() {
         )}
       </header>
       <div className="">
-        <h1 className="text-center py-2 px-2 bg-yellow-200 rounded-lg m-4">Welcome to BananoSpace! This project is still in the works, so expect tons of features to come soon! Bug fixes will come quickly, and if you need help, ping @trooperz in the Banano Discord. You may need to refresh the page for some visual elements to update (like tip and balance counter) <br/ > Need Banano? Grab some at the faucets here: <Link className="text-blue-800" href="https://faucethut.trooperz.repl.co/">FaucetHut</Link></h1>
+        <h1 className="text-center py-2 px-2 bg-yellow-200 rounded-lg m-4">Welcome to BananoSpace! This project is still in the works, so expect tons of features to come soon! Bug fixes will come quickly, and if you need help, ping @trooperz in the Banano Discord. You may need to refresh the page for some visual elements <br/ > Need Banano? Grab some at the faucets here: <Link className="text-blue-800" href="https://faucethut.trooperz.repl.co/">FaucetHut</Link></h1>
         <h2></h2>
       <NewPostForm />
       {selectedTab === "Recent" ? <RecentPosts /> : <FollowingPosts />}

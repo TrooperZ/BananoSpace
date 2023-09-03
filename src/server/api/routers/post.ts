@@ -115,23 +115,24 @@ export const postRouter = createTRPCRouter({
       return amt;
       
     }),
-    // makeComment: protectedProcedure.input(z.object({ creator: z.string(), postId: z.string(), content: z.string()}))
-    // .mutation(async ({ input: { creator, postId, content }, ctx })  => {
-    //   const post = await ctx.prisma.post.findUnique({
-    //     where: { id: postId },
-    //   });
-    //   await ctx.prisma.comment.create({
-    //     data: { content, postId, creator: creator, userId: ctx.session.user.id },
-    //   })
-    // }),
-    // deleteComment: protectedProcedure
-    // .input(z.object({ id: z.string() }))
-    // .mutation(async ({ input: { id }, ctx }) => {
+    makeComment: protectedProcedure.input(z.object({ creator: z.string(), postId: z.string(), content: z.string()}))
+    .mutation(async ({ input: { creator, postId, content }, ctx })  => {
 
-    //   await ctx.prisma.comment.delete({ where: { id: id } });
-    //   void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
+      const cmt = await ctx.prisma.comment.create({
+        data: { content: content, postId: postId, creator: creator, userId: ctx.session.user.id },
+      })
 
-    // }),
+      void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
+      return cmt;
+    }),
+    deleteComment: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input: { id }, ctx }) => {
+
+      await ctx.prisma.comment.delete({ where: { id: id } });
+      void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
+
+    }),
 });
 
 async function getInfinitePosts({
@@ -192,6 +193,7 @@ async function getInfinitePosts({
         totalTips: tipTotal,
         imageURL: post.image,
         comments: post.comments,
+        commentAmount: post.comments.length,
       };
     }),
     nextCursor,

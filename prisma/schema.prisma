@@ -125,7 +125,7 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@id([userId, postId])
+  id        String   @id @default(uuid())
   @@index([userId])
   @@index([postId])
 
