@@ -81,7 +81,7 @@ function PostCard({
   likedByMe,
   totalTips,
   imageURL,
-  comments,
+
 }: Post) {
   const trpcUtils = api.useContext();
 
@@ -174,13 +174,13 @@ function PostCard({
               </div>
 
               <p className="whitespace-pre-wrap break-all">{content}</p>
-              {imageURL && (
+              {/* {imageURL && (
                 <img
                   alt={content}
                   src={imageURL}
                   className="w-full max-w-[500px]"
                 />
-              )}
+              )} */}
               <div className="">
               <div className="flex gap-3">
                 <HeartButton
@@ -231,119 +231,119 @@ amt={0}/> */}
   );
 }
 
-function CommentButton({ isLoading, id, user, amt, commentsData }: any) {
-  const [comments, setComments] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement>();
-  const session = useSession();
+// function CommentButton({ isLoading, id, user, amt, commentsData }: any) {
+//   const [comments, setComments] = useState(false);
+//   const [inputValue, setInputValue] = useState("");
+//   const textAreaRef = useRef<HTMLTextAreaElement>();
+//   const session = useSession();
 
-  const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
-    updateTextAreaSize(textArea);
-    textAreaRef.current = textArea;
-  }, []);
+//   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
+//     updateTextAreaSize(textArea);
+//     textAreaRef.current = textArea;
+//   }, []);
 
-  useLayoutEffect(() => {
-    updateTextAreaSize(textAreaRef.current);
-  }, [inputValue]);
+//   useLayoutEffect(() => {
+//     updateTextAreaSize(textAreaRef.current);
+//   }, [inputValue]);
 
-  const handleComment = (event: FormEvent) => {
-    event.preventDefault();
+//   const handleComment = (event: FormEvent) => {
+//     event.preventDefault();
 
-    if (session.status !== "authenticated") return;
+//     if (session.status !== "authenticated") return;
 
-    if (session.data.user.name === null || session.data.user.name === undefined)
-      return;
+//     if (session.data.user.name === null || session.data.user.name === undefined)
+//       return;
 
-    commentPost.mutate({
-      creator: session.data!.user.name,
-      postId: id,
-      content: inputValue,
-    });
-  };
+//     commentPost.mutate({
+//       creator: session.data!.user.name,
+//       postId: id,
+//       content: inputValue,
+//     });
+//   };
 
-  const commentPost = api.post.makeComment.useMutation({
-    onSuccess: () => {},
-  });
+//   const commentPost = api.post.makeComment.useMutation({
+//     onSuccess: () => {},
+//   });
 
-  if (session.status !== "authenticated") {
-    return (
-      <div className="mb-1 mt-1 flex items-center gap-3 self-start text-gray-500">
-        <VscComment className="fill-gray-500" />
-        <span>{amt}</span>
-      </div>
-    );
-  }
+//   if (session.status !== "authenticated") {
+//     return (
+//       <div className="mb-1 mt-1 flex items-center gap-3 self-start text-gray-500">
+//         <VscComment className="fill-gray-500" />
+//         <span>{amt}</span>
+//       </div>
+//     );
+//   }
 
-  return (
-    <div className="w-max">
-      <button
-        onClick={() => {
-          setComments(!comments);
-        }}
-        disabled={isLoading}
-        className={`group -ml-2 flex items-center gap-1 self-start text-gray-500 transition-colors duration-200`}
-      >
-        <IconHoverEffect>
-          <VscComment
-            className={`fill-gray-500 transition-colors duration-200`}
-          />
-        </IconHoverEffect>
-        <span>{amt}</span>
-      </button>
-      {comments && (
-        <>
-          <div className="mx-auto items-center justify-center">
-            <h1 className="pb-4 text-center text-2xl font-bold"></h1>
-            <div className="space-x-4">
-              <form
-                onSubmit={handleComment}
-                className="mx-5 flex flex-col items-center gap-2 rounded-xl "
-              >
-                <div className="flex gap-4">
-                  <textarea
-                    ref={inputRef}
-                    style={{ height: 0 }}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Add comment..."
-                    autoFocus
-                    className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
-                  />
-                </div>
-                <div>
-                  <Button>Comment</Button>{" "}
-                  <button
-                    className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
-                    onClick={() => setComments(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div className="pt-2">
-            <div className="rounded-lg bg-gray-300 p-3">
-              {commentsData.map((comment: any) => (
-                <div
-                  key={comment.id}
-                  className="border-1 mx-1 border-b border-gray-700 pb-2"
-                >
-                  <h1>
-                    {comment.creator} -{" "}
-                    {dateTimeFormatter.format(comment.createdAt)}
-                  </h1>
-                  <p>{comment.content}</p>
-                  {/* {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4")) && (<DeleteButton onClick={() => deleteComment.mutate({id})} />))} */}
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div className="w-max">
+//       <button
+//         onClick={() => {
+//           setComments(!comments);
+//         }}
+//         disabled={isLoading}
+//         className={`group -ml-2 flex items-center gap-1 self-start text-gray-500 transition-colors duration-200`}
+//       >
+//         <IconHoverEffect>
+//           <VscComment
+//             className={`fill-gray-500 transition-colors duration-200`}
+//           />
+//         </IconHoverEffect>
+//         <span>{amt}</span>
+//       </button>
+//       {comments && (
+//         <>
+//           <div className="mx-auto items-center justify-center">
+//             <h1 className="pb-4 text-center text-2xl font-bold"></h1>
+//             <div className="space-x-4">
+//               <form
+//                 onSubmit={handleComment}
+//                 className="mx-5 flex flex-col items-center gap-2 rounded-xl "
+//               >
+//                 <div className="flex gap-4">
+//                   <textarea
+//                     ref={inputRef}
+//                     style={{ height: 0 }}
+//                     value={inputValue}
+//                     onChange={(e) => setInputValue(e.target.value)}
+//                     placeholder="Add comment..."
+//                     autoFocus
+//                     className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none"
+//                   />
+//                 </div>
+//                 <div>
+//                   <Button>Comment</Button>{" "}
+//                   <button
+//                     className="rounded-lg bg-red-500 p-2 px-3 font-bold text-white"
+//                     onClick={() => setComments(false)}
+//                   >
+//                     Close
+//                   </button>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//           <div className="pt-2">
+//             <div className="rounded-lg bg-gray-300 p-3">
+//               {commentsData.map((comment: any) => (
+//                 <div
+//                   key={comment.id}
+//                   className="border-1 mx-1 border-b border-gray-700 pb-2"
+//                 >
+//                   <h1>
+//                     {comment.creator} -{" "}
+//                     {dateTimeFormatter.format(comment.createdAt)}
+//                   </h1>
+//                   <p>{comment.content}</p>
+//                   {/* {((session.status == "authenticated" && (session.data!.user.id === user.id || session.data!.user.id === "cllejbo010000f3msqyos3r3a" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4")) && (<DeleteButton onClick={() => deleteComment.mutate({id})} />))} */}
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// }
 
 /* function ReportButton({ onClick }: any) {
   const session = useSession();

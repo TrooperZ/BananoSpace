@@ -16,7 +16,6 @@ function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
 function Form() {
   const session = useSession();
   const [inputValue, setInputValue] = useState("");
-  const [imageInputValue, setImageInputValue] = useState("");
 
 
   const textAreaRef = useRef<HTMLTextAreaElement>();
@@ -30,7 +29,7 @@ function Form() {
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
-  }, [inputValue, imageInputValue]);
+  }, [inputValue]);
 
   const createPost = api.post.create.useMutation({
     onSuccess: (newPost) => {
@@ -74,7 +73,7 @@ function Form() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    createPost.mutate({ content: inputValue, image: imageInputValue });
+    createPost.mutate({ content: inputValue, image: "" });
   }
 
   if (session.status !== "authenticated") return null;
