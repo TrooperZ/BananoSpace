@@ -4,8 +4,8 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
-  FormEvent,
-} from "react";
+  } from "react";
+import type {FormEvent} from "react";
 import { FaDollarSign } from "react-icons/fa";
 import { api } from "~/utils/api";
 import Button from "./Button";
@@ -96,7 +96,7 @@ function TipDialog({ user, id, dialogRefrence }: any) {
   const trpcUtils = api.useContext();
 
   const tipPost = api.post.tipPost.useMutation({
-    onSuccess: (tipAmount: Number) => {
+    onSuccess: (tipAmount: any) => {
       const updateData: Parameters<
         typeof trpcUtils.post.infiniteFeed.setInfiniteData
       >[1] = (oldData: any) => {

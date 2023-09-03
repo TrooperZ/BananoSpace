@@ -17,6 +17,7 @@ function Form() {
   const session = useSession();
   const [inputValue, setInputValue] = useState("");
   const [imageInputValue, setImageInputValue] = useState("");
+  setImageInputValue("");
 
 
   const textAreaRef = useRef<HTMLTextAreaElement>();

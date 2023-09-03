@@ -77,9 +77,6 @@ export const postRouter = createTRPCRouter({
         where: { id: userId },
       })
       const data = { postId: postId, userId: ctx.session.user.id };
-      const postFound = await ctx.prisma.post.findUnique({
-        where: { id: postId },
-      })
       const existingTip = await ctx.prisma.tip.findUnique({
         where: { userId_postId: data },
       });
@@ -118,15 +115,15 @@ export const postRouter = createTRPCRouter({
       return amt;
       
     }),
-    makeComment: protectedProcedure.input(z.object({ creator: z.string(), postId: z.string(), content: z.string()}))
-    .mutation(async ({ input: { creator, postId, content }, ctx })  => {
-      const post = await ctx.prisma.post.findUnique({
-        where: { id: postId },
-      });
-      await ctx.prisma.comment.create({
-        data: { content, postId, creator: creator, userId: ctx.session.user.id },
-      })
-    }),
+    // makeComment: protectedProcedure.input(z.object({ creator: z.string(), postId: z.string(), content: z.string()}))
+    // .mutation(async ({ input: { creator, postId, content }, ctx })  => {
+    //   const post = await ctx.prisma.post.findUnique({
+    //     where: { id: postId },
+    //   });
+    //   await ctx.prisma.comment.create({
+    //     data: { content, postId, creator: creator, userId: ctx.session.user.id },
+    //   })
+    // }),
     // deleteComment: protectedProcedure
     // .input(z.object({ id: z.string() }))
     // .mutation(async ({ input: { id }, ctx }) => {
