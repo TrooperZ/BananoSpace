@@ -118,7 +118,7 @@ export const settingsRouter = createTRPCRouter({
           if (user!.balance != undefined || !(user!.balance < parseFloat(amount))) {
             await ctx.prisma.user.update({
               where: { id: ctx.session.user.id },
-              data: { balance: user!.balance - actAmount },
+              data: { balance: user!.balance - parseFloat(amount) },
             });
           }
 
