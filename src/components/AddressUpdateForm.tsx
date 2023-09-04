@@ -98,7 +98,7 @@ function Form() {
             style={{ height: 0 }}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter post text"
+            placeholder="Enter address"
             className="w-[200px] flex-grow resize-none overflow-hidden rounded-xl border-2 border-gray-500 p-4 text-lg outline-none sm:w-[400px] md:w-[600px] lg:w-[800px]"
           />
         </div>
