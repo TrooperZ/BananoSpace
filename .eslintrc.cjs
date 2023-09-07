@@ -27,6 +27,7 @@ const config = {
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-unnecessary-type-assertion": "off",
     "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
 
   },
 };
