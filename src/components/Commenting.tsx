@@ -12,6 +12,7 @@ import { api } from "~/utils/api";
 import Button from "./Button";
 import { IconHoverEffect } from "./IconHoverEffect";
 import DeleteButton from "./DeleteButton";
+import textChecker from "./DiscordEmojiConverter";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "short",
@@ -160,7 +161,7 @@ function CommentSection({ id, commentsData }: any) {
                         {comment.creator} -{" "}
                         {dateTimeFormatter.format(Number(comment.createdAt))}
                       </h1>
-                      <p>{comment.content}</p>
+                      <p>{textChecker(comment.content)}</p>
                       </div>
                       <div className="end-0 pt-1">
  

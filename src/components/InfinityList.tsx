@@ -9,6 +9,7 @@ import HeartButton from "./HeartButton";
 import { TipButton, TipDialog } from "./TipButton";
 import DeleteButton from "./DeleteButton";
 import { CommentButton, CommentSection } from "./Commenting";
+import textChecker from "./DiscordEmojiConverter";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "short",
@@ -169,7 +170,7 @@ function PostCard({
                 <span className="text-gray-500">{totalTips.toFixed(2)} BAN tipped</span>
               </div>
 
-              <p className="whitespace-pre-wrap break-all">{content}</p>
+              <p className="whitespace-pre-wrap break-all">{textChecker(content)}</p>
               {/* {imageURL && (
                 <img
                   alt={content}
