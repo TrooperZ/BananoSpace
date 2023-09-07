@@ -165,7 +165,7 @@ function CommentSection({ id, commentsData }: any) {
                       </div>
                       <div className="end-0 pt-1">
  
-                      {( (session.status == "authenticated" && (session.data!.user.id === comment.userId || session.data!.user.id === "clm3kxaaz0000f334m1hm9nh4" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4"))  && (<DeleteButton onClick={() => deleteComment.mutate({id})} />))}
+                      {( (session.status == "authenticated" && (session.data!.user.id === comment.userId || session.data!.user.id === "clm3kxaaz0000f334m1hm9nh4" || session.data!.user.id === "clkpsr1lc0000ml08o5pmj7l4"))  && (<DeleteButton onClick={() => deleteComment.mutate({id: comment.id})} />))}
                       </div>
                     </div>
                   ))}
